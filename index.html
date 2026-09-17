@@ -1,1 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PixMorph AI</title>
+    <link rel="stylesheet" href="style.css">
+</head>
 
+<body>
+
+    <header>
+        <div class="logo">PixMorph <span>AI</span></div>
+        <button class="login-btn">Login</button>
+    </header>
+
+    <main>
+
+        <section class="hero">
+            <div class="badge">✨ AI PHOTO TRANSFORMER</div>
+
+            <h1>
+                Turn Your Photos<br>
+                Into <span>AI Art</span>
+            </h1>
+
+            <p>
+                Transform your real photos into stunning
+                3D portraits, 2D cartoons and anime art.
+            </p>
+
+            <button class="upload-btn" id="uploadBtn">
+                📷 Upload Your Photo
+            </button>
+
+            <input type="file" id="photoInput" accept="image/*" hidden>
+            <div id="photoPreview" class="photo-preview">
+    <img id="previewImage" src="" alt="Your uploaded photo">
+</div>
+
+            <p class="small-text">
+                JPG, PNG or WEBP • Fast & Easy
+            </p>
+        </section>
+
+        <section class="styles">
+
+            <h2>Choose Your Style</h2>
+
+            <div class="style-container">
+
+                <div class="style-card">
+                    <div class="style-icon">🧊</div>
+                    <h3>3D Portrait</h3>
+                    <p>Turn your photo into a 3D character.</p>
+                </div>
+
+                <div class="style-card">
+                    <div class="style-icon">✏️</div>
+                    <h3>2D Cartoon</h3>
+                    <p>Create a fun cartoon version of yourself.</p>
+                </div>
+
+                <div class="style-card">
+                    <div class="style-icon">🎌</div>
+                    <h3>Anime</h3>
+                    <p>Transform your photo into anime art.</p>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <footer>
+        <p>© 2026 PixMorph AI. All rights reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
