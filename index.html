@@ -3,37 +3,493 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PixMorph AI</title>
-    <link rel="stylesheet" href="Style.css">
+    <title>AI Portrait Generator - Portrait Ai</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .card h2 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .upload-area {
+            border: 3px dashed #667eea;
+            border-radius: 12px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            background: #f8f9ff;
+            transition: all 0.3s ease;
+        }
+
+        .upload-area:active {
+            background: #e8ebff;
+            border-color: #764ba2;
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .upload-text {
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .upload-subtext {
+            color: #999;
+            font-size: 14px;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .preview-section {
+            margin-top: 20px;
+            text-align: center;
+            display: none;
+        }
+
+        .preview-section.show {
+            display: block;
+        }
+
+        .preview-image {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .remove-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .styles-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .style-card {
+            border: 3px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        .style-card:active {
+            border-color: #667eea;
+            background: #f8f9ff;
+            transform: scale(0.98);
+        }
+
+        .style-card.selected {
+            border-color: #667eea;
+            background: #f8f9ff;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .style-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .style-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .generate-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .generate-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .generate-btn:active:not(:disabled) {
+            transform: scale(0.98);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 5px solid #f0f0f0;
+            border-top: 5px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .error {
+            background: #ffe8e8;
+            color: #e74c3c;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            border-left: 4px solid #e74c3c;
+        }
+
+        .error.show {
+            display: block;
+        }
+
+        .result {
+            display: none;
+        }
+
+        .result.show {
+            display: block;
+        }
+
+        .result-image {
+            max-width: 100%;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-direction: column;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #667eea;
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                padding: 20px;
+            }
+
+            .styles-grid {
+                gap: 10px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
 </head>
-
 <body>
-
     <header>
-        <div class="logo">PixMorph <span>AI</span></div>
-        <button class="login-btn">Login</button>
+        <div class="logo">✨ Portrait Ai</div>
     </header>
 
-    <main>
+    <div class="container">
+        <h1>Create Your AI Portrait</h1>
 
-        <section class="hero">
-            <div class="badge">✨ AI PHOTO TRANSFORMER</div>
+        <div class="error" id="errorMsg"></div>
 
-            <h1>
-                Turn Your Photos<br>
-                Into <span>AI Art</span>
-            </h1>
+        <!-- UPLOAD -->
+        <div class="card">
+            <h2>📸 Upload Your Photo</h2>
+            <div class="upload-area" onclick="document.getElementById('photoInput').click()">
+                <div class="upload-icon">📸</div>
+                <div class="upload-text">Tap to select photo</div>
+                <div class="upload-subtext">PNG, JPG up to 5MB</div>
+            </div>
+            <input type="file" id="photoInput" accept="image/*">
+            
+            <div class="preview-section" id="previewSection">
+                <img id="previewImage" class="preview-image">
+                <button class="remove-btn" onclick="removeImage()">Remove</button>
+            </div>
+        </div>
 
-            <p>
-                Transform your real photos into stunning
-                3D portraits, 2D cartoons and anime art.
-            </p>
+        <!-- STYLES -->
+        <div class="card">
+            <h2>🎨 Choose Style</h2>
+            <div class="styles-grid">
+                <div class="style-card" onclick="selectStyle('3d', this)">
+                    <div class="style-icon">🎨</div>
+                    <div class="style-name">3D</div>
+                </div>
+                <div class="style-card" onclick="selectStyle('cartoon', this)">
+                    <div class="style-icon">✏️</div>
+                    <div class="style-name">Cartoon</div>
+                </div>
+                <div class="style-card" onclick="selectStyle('anime', this)">
+                    <div class="style-icon">🎬</div>
+                    <div class="style-name">Anime</div>
+                </div>
+            </div>
+        </div>
 
-            <button class="upload-btn" id="uploadBtn">
-                📷 Upload Your Photo
-            </button>
+        <!-- GENERATE -->
+        <div class="card">
+            <button class="generate-btn" id="generateBtn" onclick="generatePortrait()" disabled>Generate Portrait</button>
+        </div>
 
-            <input type="file" id="photoInput" accept="image/*" hidden>
+        <!-- LOADING -->
+        <div class="card loading" id="loading">
+            <div class="spinner"></div>
+            <div class="loading-text">Creating your portrait...</div>
+            <div style="color: #999; font-size: 14px;">This takes 30-60 seconds</div>
+        </div>
+
+        <!-- RESULT -->
+        <div class="card result" id="result">
+            <h2>Your AI Portrait</h2>
+            <img id="resultImage" class="result-image">
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="downloadImage()">⬇️ Download</button>
+                <button class="btn btn-secondary" onclick="generateAnother()">✨ Create Another</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'https://portraitai-backend.vercel.app/api/generate';
+        let selectedFile = null;
+        let selectedStyle = null;
+        let currentResult = null;
+
+        // UPLOAD
+        document.getElementById('photoInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                if (!file.type.startsWith('image/')) {
+                    showError('Please select an image file');
+                    return;
+                }
+                if (file.size > 5 * 1024 * 1024) {
+                    showError('Image must be less than 5MB');
+                    return;
+                }
+
+                selectedFile = file;
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    document.getElementById('previewImage').src = event.target.result;
+                    document.getElementById('previewSection').classList.add('show');
+                    clearError();
+                    updateButton();
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function removeImage() {
+            selectedFile = null;
+            document.getElementById('photoInput').value = '';
+            document.getElementById('previewSection').classList.remove('show');
+            updateButton();
+        }
+
+        // STYLES
+        function selectStyle(style, el) {
+            document.querySelectorAll('.style-card').forEach(c => c.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedStyle = style;
+            updateButton();
+        }
+
+        function updateButton() {
+            const btn = document.getElementById('generateBtn');
+            btn.disabled = !(selectedFile && selectedStyle);
+        }
+
+        // GENERATE
+        async function generatePortrait() {
+            if (!selectedFile || !selectedStyle) return;
+
+            document.getElementById('loading').classList.add('show');
+            document.getElementById('result').classList.remove('show');
+            clearError();
+
+            try {
+                const reader = new FileReader();
+                reader.onload = async function(e) {
+                    const imageBase64 = e.target.result;
+
+                    const response = await fetch(API_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            imageUrl: imageBase64,
+                            style: selectedStyle
+                        })
+                    });
+
+                    if (!response.ok) {
+                        const error = await response.json();
+                        throw new Error(error.error || 'Generation failed');
+                    }
+
+                    const result = await response.json();
+                    if (!result.success || !result.image) {
+                        throw new Error('No image returned');
+                    }
+
+                    currentResult = result.image;
+                    document.getElementById('resultImage').src = result.image;
+                    document.getElementById('loading').classList.remove('show');
+                    document.getElementById('result').classList.add('show');
+                };
+                reader.readAsDataURL(selectedFile);
+
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('loading').classList.remove('show');
+                showError('Error: ' + error.message);
+            }
+        }
+
+        // ACTIONS
+        function downloadImage() {
+            if (!currentResult) return;
+            const link = document.createElement('a');
+            link.href = currentResult;
+            link.download = `portrait-${Date.now()}.png`;
+            link.click();
+        }
+
+        function generateAnother() {
+            selectedFile = null;
+            selectedStyle = null;
+            document.getElementById('photoInput').value = '';
+            document.getElementById('previewSection').classList.remove('show');
+            document.querySelectorAll('.style-card').forEach(c => c.classList.remove('selected'));
+            document.getElementById('result').classList.remove('show');
+            document.getElementById('loading').classList.remove('show');
+            updateButton();
+            window.scrollTo(0, 0);
+        }
+
+        // ERRORS
+        function showError(msg) {
+            const el = document.getElementById('errorMsg');
+            el.textContent = msg;
+            el.classList.add('show');
+        }
+
+        function clearError() {
+            document.getElementById('errorMsg').classList.remove('show');
+        }
+
+        updateButton();
+    </script>
+</body>
+</html>
             <div id="photoPreview" class="photo-preview">
     <img id="previewImage" src="" alt="Your uploaded photo">
 </div>
